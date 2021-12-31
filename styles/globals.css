@@ -70,18 +70,49 @@ a {
 .swiper{
   background: #131313;
   position: unset!important;
-} 
+}
 .swiper-button-next{
-  top: 60%!important;
+  top: 50%!important;
   right: 5%!important;
   left: auto;
    
+} 
+@media screen and (max-width: 1376px) {
+  .swiper-button-next {
+    top: 42%!important;
+  }
 }
+
 @media screen and (max-width: 991px) {
   .swiper-button-next {
+    display: none!important;
     top: 72%!important;
+  }
+}
+@media screen and (max-width: 768px) {
+  .swiper-button-next {
+    display: none!important;
   }
 }
 .swiper-button-prev{
   display: none!important;
+}
+.indicatorContainer{
+  background: #131313!important;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #232323; 
+  border-radius: 2px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background:#131313; 
+  border-radius: 2px;
 }
