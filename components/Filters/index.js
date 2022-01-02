@@ -1,29 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './filters.module.scss';
 import Select, { components } from 'react-select';
 import { Carrot } from '../Icons';
 const Filters = ({
-	product,
-	city,
-	state,
 	productOptions,
 	stateOptions,
 	cityOptions,
-	setProductOptions,
-	setStateOptions,
-	setCityOptions,
 	sliderData,
 	sliderData2,
 	sliderData3,
+	selectedProduct,
+	changeProductHandler,
+	selectedState,
+	selectedCity,
+	setSelectedCity,
+	setSelectedState,
+	setSelectedProduct
 }) => {
-	// const checkOp
-	// const uniqProduct = [...new Set(productArr)];
-	// const uniqState = [...new Set(stateArr)];
-	// const uniqCity = [...new Set(cityArr)];
-	console.log('1', productOptions);
-	console.log('2', stateOptions);
-	console.log('3', cityOptions);
-
 	const productOptionList = productOptions.map((op) => {
 		return { value: `${op}`, label: `${op}` };
 	});
@@ -46,49 +39,30 @@ const Filters = ({
 
 			color: state.isSelected ? 'white' : 'white',
 			backgroundColor: state.isSelected ? '#232323' : '#232323',
-			//backgroundColor: state.isSelected ? "rgb(95, 50, 187, 10%)" : "white",
 		}),
-		// control: (base, state) => ({
-		//   ...base,
-		//   height: 55,
-		//   minHeight: 55,
-		//   borderColor: state.isFocused
-		// 	? props.error
-		// 	  ? "red"
-		// 	  : "#03658c"
-		// 	: props.error
-		// 	? "red"
-		// 	: "#e0e0e0",
-		//   boxShadow: "0 !important",
-		//   "&:hover": {
-		// 	borderColor: "#03658c",
-		//   },
-		//   "&:focus": {
-		// 	borderColor: "#03658c",
-		//   },
-		// }),
+		valueContainer: (base, state) => ({
+			...base,
+			color: '#ffffff',
+		}),
 		control: (base, state) => ({
 			...base,
-			color: state.isSelected ? '#fffffff' : '#ffffff',
+			color: state.isSelected ? 'red' : 'blue',
 			backgroundColor: state.isSelected ? '#232323' : '#232323',
 			width: '100%',
-			borderColor:'transparent'
+			borderColor: 'transparent',
 		}),
 		singleValue: (base, state) => ({
 			...base,
 			color: state.isSelected ? '#ffffff' : '#ffffff',
-			fontSize:'17px'
+			fontSize: '17px',
 		}),
 		menuList: (base, state) => ({
 			...base,
 			paddingTop: '0',
 			paddingBottom: '0',
+			zIndex: '3',
 		}),
 	};
-	//   <components.DropdownIndicator>
-	//   <img src="https://via.placeholder.com/30x30"/>
-	// </components.DropdownIndicator>
-
 	return (
 		<div className={styles.filter_section}>
 			<h3>Filters</h3>
@@ -97,10 +71,19 @@ const Filters = ({
 				className={styles.select}
 				placeholder='Product'
 				onChange={(e) => {
-					console.log('CHANGE 1', e.value);
-					// setProductOptions(e.value)
-					sliderData(e.value);
+					if (selectedProduct !== '' && selectedProduct !== e.value) {
+						changeProductHandler(e.value);
+						setSelectedState(null);
+						setSelectedCity(null);
+						setSelectedProduct(e.value)
+					} else {
+						setSelectedProduct(e.value)
+						sliderData(e.value);
+
+					}
 				}}
+				getOptionLabel={(option) => option.label}
+				getOptionValue={(option) => option.label}
 				options={productOptionList}
 				styles={customStyles}
 			/>
@@ -109,30 +92,37 @@ const Filters = ({
 				className={styles.select}
 				placeholder='State'
 				onChange={(e) => {
-					console.log('CHANGE 2', e.value);
-					// setStateOptions(e.value)
+					setSelectedState(e);
+					setSelectedCity(null);
 					sliderData2(e.value);
 				}}
 				options={stateOptionList}
 				styles={customStyles}
+				value={selectedState}
+				name='State'
+				getOptionLabel={(option) => option.label}
+				getOptionValue={(option) => option.value}
 			/>
 			<Select
 				components={{ DropdownIndicator }}
 				className={styles.select}
 				placeholder='City'
 				onChange={(e) => {
-					console.log('CHANGE 3', e.value);
-					// setCityOptions(e.value)
+					setSelectedCity(e);
 					sliderData3(e.value);
 				}}
 				styles={customStyles}
 				options={cityOptionList}
+				name='City'
+				value={selectedCity}
+				getOptionLabel={(option) => option.label}
+				getOptionValue={(option) => option.label}
 			/>
 		</div>
 	);
 };
 const DropdownIndicator = (props) => {
-	return (
+		return (
 		<components.DropdownIndicator {...props}>
 			<Carrot />
 		</components.DropdownIndicator>

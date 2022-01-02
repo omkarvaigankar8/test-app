@@ -1,13 +1,8 @@
-import Head from 'next/head';
-import Image from 'next/image';
 import styles from '../styles/Home.module.scss';
-// import Data from '../data.json';
-import { arrayMaker } from '../utils/utils';
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import Card from '../components/Card';
 import Filters from '../components/Filters';
 export default function Home({data}) {
-	console.log('Data',data);
 	var productArr = [];
 	var cityArr = [];
 	var stateArr = [];
@@ -26,14 +21,16 @@ export default function Home({data}) {
 	const [cityOptions, setCityOptions] = useState(uniqCity	);
 	const [moreFiltered, setMoreFiltered] = useState(data);
 	const [maxFiltered, setMaxFiltered] = useState(data);
+	const [selectedProduct,setSelectedProduct]= useState('All Products')
+	const [selectedCity,setSelectedCity]= useState(null)
+	const [selectedState,setSelectedState]= useState(null)
+
 
 	
 	const sliderData = (val) => {
 		let Data = filteredProducts.filter(function (event) {
-			console.log('hi', event, val);
 			return event.product_name == `${val}`;
 		});
-		console.log('DAATTTAAAAA', Data);
 		setFilteredProducts(Data);
 		setMoreFiltered(Data);
 		setMaxFiltered(Data);
@@ -41,26 +38,39 @@ export default function Home({data}) {
 		stateArr = [];
 		cityArr = [];
 		Data.map((d) => {
-			console.log('D', d);
 			productArr.push(d.product_name);
 			cityArr.push(d.address.city);
 			stateArr.push(d.address.state);
 		});
-		uniqProduct = [...new Set(productArr)];
-		console.log('ffffffffff', uniqProduct);
 		uniqState = [...new Set(stateArr)];
-		console.log('aaaaaa', uniqState);
 		uniqCity = [...new Set(cityArr)];
-		setProductOptions(uniqProduct);
 		setStateOptions(uniqState);
 		setCityOptions(uniqCity);
-		console.log('cccccc', uniqCity);
 	};
+	const changeProductHandler = (val) =>{
+		productArr = []
+		stateArr=[]
+		cityArr=[]	
+		let Data = data.filter(function (event) {
+			return event.product_name == `${val}`;
+		});
+		setFilteredProducts(Data);	
+		setMoreFiltered(Data);
+		setMaxFiltered(Data);	
+		Data.map((d) => {
+			productArr.push(d.product_name);
+			cityArr.push(d.address.city);
+			stateArr.push(d.address.state);
+		});
+		uniqState = [...new Set(stateArr)];
+		uniqCity = [...new Set(cityArr)];
+		setStateOptions(uniqState);
+		setCityOptions(uniqCity);
+	} 
 	const sliderData2 = (val) => {
 		let Data = moreFiltered.filter(function (event) {
 			return event.address.state == `${val}`;
 		});
-		console.log('DAATTTAAAAA', Data);
 		setFilteredProducts(Data);
 		setMoreFiltered(Data);
 		setMaxFiltered(Data);
@@ -68,18 +78,12 @@ export default function Home({data}) {
 		stateArr = [];
 		cityArr = [];
 		Data.map((d) => {
-			console.log('D', d);
 			productArr.push(d.product_name);
 			cityArr.push(d.address.city);
 			stateArr.push(d.address.state);
 		});
-		uniqProduct = [...new Set(productArr)];
-		console.log('ffffffffff', uniqProduct);
 		uniqState = [...new Set(stateArr)];
-		console.log('aaaaaa', uniqState);
 		uniqCity = [...new Set(cityArr)];
-		console.log('cccccc', uniqCity);
-		setProductOptions(uniqProduct);
 		setStateOptions(uniqState);
 		setCityOptions(uniqCity);
 	};
@@ -87,7 +91,6 @@ export default function Home({data}) {
 		let Data = maxFiltered.filter(function (event) {
 			return event.address.city == `${val}`;
 		});
-		console.log('DAATTTAAAAA', Data);
 		setFilteredProducts(Data);
 		setMoreFiltered(Data);
 		setMaxFiltered(Data);
@@ -95,18 +98,12 @@ export default function Home({data}) {
 		stateArr = [];
 		cityArr = [];
 		Data.map((d) => {
-			console.log('D', d);
 			productArr.push(d.product_name);
 			cityArr.push(d.address.city);
 			stateArr.push(d.address.state);
 		});
-		uniqProduct = [...new Set(productArr)];
-		console.log('ffffffffff', uniqProduct);
 		uniqState = [...new Set(stateArr)];
-		console.log('aaaaaa', uniqState);
 		uniqCity = [...new Set(cityArr)];
-		console.log('cccccc', uniqCity);
-		setProductOptions(uniqProduct);
 		setStateOptions(uniqState);
 		setCityOptions(uniqCity);
 	};
@@ -117,8 +114,8 @@ export default function Home({data}) {
 				<div className={styles.filters}>
 				<div className={styles.heading}>
 							<h1>Edvora</h1>
-							<h4>Products</h4>
-							<h5>Product Name</h5>
+								{/* <h4>Products</h4>
+								<h5>Product Name</h5> */}
 						</div>
 					<div className={styles.filter_container}>
 					
@@ -132,6 +129,13 @@ export default function Home({data}) {
 							sliderData={sliderData}
 							sliderData2={sliderData2}
 							sliderData3={sliderData3}
+							selectedProduct={selectedProduct}
+							selectedState={selectedState}
+							selectedCity={selectedCity}
+							setSelectedProduct={setSelectedProduct}
+							setSelectedCity={setSelectedCity}
+							setSelectedState={setSelectedState}
+							changeProductHandler={changeProductHandler}
 						/>
 					</div>
 				</div>
@@ -139,7 +143,7 @@ export default function Home({data}) {
 					<div className={styles.heading}>
 						<h1>Edvora</h1>
 						<h4>Products</h4>
-						<h5>Product Name</h5>
+						<h5>{selectedProduct}</h5>
 					</div>
 					<Card card={filteredProducts} />
 				</div>
@@ -148,10 +152,7 @@ export default function Home({data}) {
 	);
 }
 export async function getServerSideProps() {
-	// Fetch data from external API
 	const res = await fetch(`https://assessment-edvora.herokuapp.com`)
 	const data = await res.json()
-//    console.log('-----------------------------',data)
-	// Pass data to the page via props
 	return { props: { data } }
   }
