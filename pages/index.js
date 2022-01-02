@@ -121,8 +121,6 @@ export default function Home({data}) {
 			cityArr.push(d.address.city);
 			stateArr.push(d.address.state);
 		});
-		uniqState = [...new Set(stateArr)];	
-		setStateOptions(uniqState);
 	};
 const changeCityHandler = (val) =>{
 	let Data = moreFiltered.filter(function (event) {
@@ -137,8 +135,6 @@ const changeCityHandler = (val) =>{
 				<div className={styles.filters}>
 				<div className={styles.heading}>
 							<h1>Edvora</h1>
-								{/* <h4>Products</h4>
-								<h5>Product Name</h5> */}
 						</div>
 					<div className={styles.filter_container}>
 					
