@@ -100,7 +100,6 @@ const Filters = ({
 					setSelectedCity(null);
 					}
 					else{
-					console.log('Chnge State:',e)
 					setSelectedState(e);
 					setSelectedCity(null);
 					sliderData2(e.value);
@@ -122,7 +121,6 @@ const Filters = ({
 						setSelectedCity(e);
 					}
 						else{
-					console.log('Chnge',e)
 					setSelectedCity(e);
 					sliderData3(e.value);
 				}}}
