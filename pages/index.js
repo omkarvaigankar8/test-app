@@ -15,6 +15,7 @@ export default function Home({data}) {
 	var uniqProduct = [...new Set(productArr)];
 	var uniqState = [...new Set(stateArr)];
 	var uniqCity = [...new Set(cityArr)];
+	const [overallProducts, setOverallProducts] = useState(data);
 	const [filteredProducts, setFilteredProducts] = useState(data);
 	const [productOptions, setProductOptions] = useState(uniqProduct);
 	const [stateOptions, setStateOptions] = useState(uniqState);
@@ -54,7 +55,8 @@ export default function Home({data}) {
 		let Data = data.filter(function (event) {
 			return event.product_name == `${val}`;
 		});
-		setFilteredProducts(Data);	
+		setFilteredProducts(Data);
+		setOverallProducts(Data)	
 		setMoreFiltered(Data);
 		setMaxFiltered(Data);	
 		Data.map((d) => {
@@ -67,11 +69,12 @@ export default function Home({data}) {
 		setStateOptions(uniqState);
 		setCityOptions(uniqCity);
 	} 
-	const sliderData2 = (val) => {
-		let Data = moreFiltered.filter(function (event) {
+	const changeStateHandler = (val) => {
+		let Data = filteredProducts.filter(function (event) {
 			return event.address.state == `${val}`;
-		});
-		setFilteredProducts(Data);
+		})
+		setOverallProducts(Data)	
+
 		setMoreFiltered(Data);
 		setMaxFiltered(Data);
 		productArr = [];
@@ -82,17 +85,33 @@ export default function Home({data}) {
 			cityArr.push(d.address.city);
 			stateArr.push(d.address.state);
 		});
-		uniqState = [...new Set(stateArr)];
 		uniqCity = [...new Set(cityArr)];
-		setStateOptions(uniqState);
+		setCityOptions(uniqCity);
+	} 
+	const sliderData2 = (val) => {
+		let Data = moreFiltered.filter(function (event) {
+			return event.address.state == `${val}`;
+		});
+		setOverallProducts(Data)	
+
+		setMoreFiltered(Data);
+		setMaxFiltered(Data);
+		productArr = [];
+		stateArr = [];
+		cityArr = [];
+		Data.map((d) => {
+			productArr.push(d.product_name);
+			cityArr.push(d.address.city);
+			stateArr.push(d.address.state);
+		});
+		uniqCity = [...new Set(cityArr)];
 		setCityOptions(uniqCity);
 	};
 	const sliderData3 = (val) => {
 		let Data = maxFiltered.filter(function (event) {
 			return event.address.city == `${val}`;
 		});
-		setFilteredProducts(Data);
-		setMoreFiltered(Data);
+		setOverallProducts(Data)	
 		setMaxFiltered(Data);
 		productArr = [];
 		stateArr = [];
@@ -102,12 +121,16 @@ export default function Home({data}) {
 			cityArr.push(d.address.city);
 			stateArr.push(d.address.state);
 		});
-		uniqState = [...new Set(stateArr)];
-		uniqCity = [...new Set(cityArr)];
+		uniqState = [...new Set(stateArr)];	
 		setStateOptions(uniqState);
-		setCityOptions(uniqCity);
 	};
-
+const changeCityHandler = (val) =>{
+	let Data = moreFiltered.filter(function (event) {
+		return event.address.city == `${val}`;
+	})
+	setOverallProducts(Data)			
+	setMaxFiltered(Data);
+}
 	return (
 		<div className={styles.container}>
 			<div className={styles.content_box}>
@@ -136,6 +159,8 @@ export default function Home({data}) {
 							setSelectedCity={setSelectedCity}
 							setSelectedState={setSelectedState}
 							changeProductHandler={changeProductHandler}
+							changeStateHandler={changeStateHandler}
+							changeCityHandler={changeCityHandler}
 						/>
 					</div>
 				</div>
@@ -145,7 +170,7 @@ export default function Home({data}) {
 						<h4>Products</h4>
 						<h5>{selectedProduct}</h5>
 					</div>
-					<Card card={filteredProducts} />
+					<Card card={overallProducts} />
 				</div>
 			</div>
 		</div>

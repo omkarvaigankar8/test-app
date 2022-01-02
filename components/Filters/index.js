@@ -15,7 +15,9 @@ const Filters = ({
 	selectedCity,
 	setSelectedCity,
 	setSelectedState,
-	setSelectedProduct
+	setSelectedProduct,
+	changeStateHandler,
+	changeCityHandler
 }) => {
 	const productOptionList = productOptions.map((op) => {
 		return { value: `${op}`, label: `${op}` };
@@ -92,10 +94,17 @@ const Filters = ({
 				className={styles.select}
 				placeholder='State'
 				onChange={(e) => {
+					if(selectedState !== null){
+					changeStateHandler(e.value)	
+					setSelectedState(e);
+					setSelectedCity(null);
+					}
+					else{
+					console.log('Chnge State:',e)
 					setSelectedState(e);
 					setSelectedCity(null);
 					sliderData2(e.value);
-				}}
+				}}}
 				options={stateOptionList}
 				styles={customStyles}
 				value={selectedState}
@@ -108,9 +117,15 @@ const Filters = ({
 				className={styles.select}
 				placeholder='City'
 				onChange={(e) => {
+					if(selectedCity !== null){
+						changeCityHandler(e.value)	
+						setSelectedCity(e);
+					}
+						else{
+					console.log('Chnge',e)
 					setSelectedCity(e);
 					sliderData3(e.value);
-				}}
+				}}}
 				styles={customStyles}
 				options={cityOptionList}
 				name='City'
